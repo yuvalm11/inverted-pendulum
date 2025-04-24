@@ -51,6 +51,7 @@ Therefore we  define:
 - $x_s, y_x$ - the x, y coordinates of the point
 
 First, since the mass is uniformly distributed:
+
 $$
 \frac{dm_p}{m_p} = \frac{dr}{l} \Rightarrow dm_p = \frac{m_p}{l}dr
 $$
@@ -65,11 +66,13 @@ $$
 $$
 
 Therefore, the squared speed of each object is:
+
 $$
 v_s^2 = \dot{x_s}^2 + \dot{y_s}^2 = v^2 + 2v\omega r \cos\theta + \omega^2r^2
 $$
 
 and the kinetic energy of each object is:
+
 $$
 dT_\text{pole} = \frac{1}{2}dm_p\cdot v_s^2 = \frac{m_p}{2l}(v^2 + 2v\omega r \cos\theta + \omega^2r^2)dr
 $$
@@ -86,6 +89,7 @@ $$
 
 
 And the total kinetic energy of the system:
+
 $$
 \begin{aligned}
 T 
@@ -112,9 +116,7 @@ $$
 
 $$
 L = T - V = 
-\frac{1}{2}(m_c+m_p)v^2 + \frac{1}{2}m_p\omega l\left(v\cos\theta+\frac{1}{3}\omega l\right)
--
-\frac{1}{2}m_pgl\cos\theta
+\frac{1}{2}(m_c+m_p)v^2 + \frac{1}{2}m_p\omega l\left(v\cos\theta+\frac{1}{3}\omega l\right)-\frac{1}{2}m_pgl\cos\theta
 $$
 
 ## Find The Acceleration
@@ -128,7 +130,9 @@ Since $q_i=x$, we can see that $\frac{\partial L}{\partial{q_i}} =\frac{\partial
 $$
 \frac{\partial L}{\partial v} = (m_c+m_p)\cdot v + \frac{1}{2}m_p\omega l\cos\theta
 $$
+
 and
+
 $$
 \frac{d}{dt} \left( \frac{\partial L}{\partial v} \right) = (m_c + m_p) \cdot a + \frac{1}{2}m_pl(\alpha\cos\theta - \omega^2\sin\theta)
 $$
@@ -139,24 +143,30 @@ $$
 \begin{aligned}
 Q_x = f - \mu_cv
 &= \frac{d}{dt} \left( \frac{\partial L}{\partial v} \right) - \cancel{\frac{\partial L}{\partial{x}}}\\
-
 f - \mu_cv &= (m_c + m_p) \cdot a + \frac{1}{2}m_pl(\alpha\cos\theta - \omega^2\sin\theta)
 \end{aligned}
 $$
 
 Similarly on the pole we get:
+
 $$
 \frac{\partial L}{\partial{q_i}} = \frac{\partial L}{\partial{\theta}} = \frac{1}{2}m_pl\sin\theta(g-v\omega)
 $$
+
 and
+
 $$
 \frac{\partial L}{\partial \dot{q_i}} = \frac{\partial L}{\partial \omega} = \frac{1}{2}m_plv\cos\theta + \frac{1}{3}m_pl^2\omega
 $$
+
 Therefore: 
+
 $$
 \frac{d}{dt} \left( \frac{\partial L}{\partial \omega} \right) = \frac{1}{2}m_pl(a\cos\theta - v\omega\sin\theta) + \frac{1}{3}m_pl^2\alpha
 $$
+
 Finally we get:
+
 $$
 \begin{aligned}
 -\mu_p\omega &= \frac{1}{2}m_pl(a\cos\theta - v\omega\sin\theta) + \frac{1}{3}m_pl^2\alpha - \frac{1}{2}m_pl\sin\theta(g-v\omega)\\
@@ -265,7 +275,8 @@ We will use the Vanilla Policy Gradient algorithm to train our agent. We aim to 
 
 Intuitively, we do so by letting the policy act on our environment and by sampling many instances of our policy in action we can evaluate the contribution of certain actions to our overall goal. Then, we iteratively change our policy such that more effective actions will be more probable in the future.
 
-Mathematically speaking, the update rule for our policy will be: 
+Mathematically speaking, the update rule for our policy will be:
+
 $$
 \theta \leftarrow \theta + \alpha \cdot \nabla_\theta\log\pi_\theta(a_t|s_t)*R_t
 $$
