@@ -1,16 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import jax.numpy as jnp
 
-# Constants
-m_c = 1.0    # mass of the cart (kg)
-m_p = 1.0    # mass of the pole (kg)
-l = 1        # length of the pole (m)
-g = 9.81     # gravity (m/s^2)
-mu_c = 0.02  # cart friction coefficient
-mu_p = 0.02  # pole friction coefficient
+m_c = 1.0
+m_p = 1.0
+l = 1
+g = 9.81
+mu_c = 0.02
+mu_p = 0.02
 
-def cartpole_dynamics(state, f, dt=0.02):
+def trajectory_step(state, f, dt=0.02, np=np):
     x, v, theta, omega = state
     sin_theta = np.sin(theta)
     cos_theta = np.cos(theta)
@@ -23,12 +23,10 @@ def cartpole_dynamics(state, f, dt=0.02):
     B2 = (1/3) * m_p * l**2
     C2 = -mu_p * omega + 0.5 * m_p * l * g * sin_theta
 
-    # Matrix form:
     M = np.array([[A1, B1],
                   [A2, B2]])
     RHS = np.array([C1, C2])
 
-    # Solve for a and alpha
     a, alpha = np.linalg.solve(M, RHS)
 
     x_new = x + v * dt
@@ -38,21 +36,19 @@ def cartpole_dynamics(state, f, dt=0.02):
 
     return np.array([x_new, v_new, theta_new, omega_new])
 
-
-
 def animate_cartpole(trajectory, l=0.5, interval=20):
-    fig, ax = plt.subplots()
+    plt.switch_backend('Agg')
+    
+    fig, ax = plt.subplots(figsize=(16, 6))
     ax.set_aspect('equal', adjustable='box')
-    ax.set_xlim(-2.5, 2.5)
-    ax.set_ylim(-1, 1.5)
+    ax.set_xlim(-7, 7)
+    ax.set_ylim(-1.5, 2.5)
 
-    # Draw track
-    ax.plot([-2.5, 2.5], [0, 0], 'k', lw=2)
+    ax.plot([-7, 7], [0, 0], 'k', lw=2)
 
-    # Elements to animate
-    cart_width, cart_height = 0.3, 0.2
+    cart_width, cart_height = 0.8, 0.6
     cart_patch = plt.Rectangle((0, 0), cart_width, cart_height, fc='blue', ec='black')
-    pole_line, = ax.plot([], [], lw=4, c='orange')
+    pole_line, = ax.plot([], [], lw=6, c='orange')
     ax.add_patch(cart_patch)
 
     def init():
@@ -63,32 +59,58 @@ def animate_cartpole(trajectory, l=0.5, interval=20):
     def update(frame):
         x, _, theta, _ = trajectory[frame]
 
-        # Update cart
         cart_patch.set_xy((x - cart_width / 2, 0))
 
-        # Update pole
-        pole_x = [x, x + l * np.sin(theta)]
-        pole_y = [cart_height / 2, cart_height / 2 + l * np.cos(theta)]
+        pole_x = [x, x + (l+0.5) * np.sin(theta)]
+        pole_y = [cart_height / 2, cart_height / 2 + (l+0.5) * np.cos(theta)]
         pole_line.set_data(pole_x, pole_y)
 
         return cart_patch, pole_line
 
     ani = animation.FuncAnimation(
         fig, update, frames=len(trajectory),
-        init_func=init, blit=True, interval=interval, repeat=False
+        init_func=init, blit=True, interval=interval, repeat=True
     )
 
-    plt.title("Cart-Pole Animation")
     plt.grid(True)
-    plt.show()
+    plt.tight_layout()
+    
+    print("Saving animation to 'cartpole_animation.mp4'...")
+    ani.save('cartpole_animation.mp4', 
+             writer='ffmpeg', 
+             fps=30,
+             dpi=100,
+             progress_callback=lambda i, n: print(f"\rProgress: {i}/{n} frames ({i/n*100:.1f}%)", end=""))
+    print("\nAnimation saved successfully!")
+    plt.close()
 
+def read_params(filename):
+    npz_file = np.load(filename)
+    n_files = len(npz_file.files)
+    n_layers = (n_files - 1) // 2
+    return {
+        "weights": [npz_file[f"weights_{i}"] for i in range(n_layers)],
+        "biases": [npz_file[f"biases_{i}"] for i in range(n_layers)],
+        "log_std_dev": npz_file["log_std_dev"],
+    }
 
-state = np.array([-2.0, 0.0, np.pi, 0.0])
+def compute_mean_force(state, params):
+    n_layers = len(params["weights"])
+    theta = (state[2] + np.pi) % 2 - np.pi
+    x = jnp.array([state[0], state[1], theta, state[3]])
+    for layer in range(n_layers - 1):
+        x = params["weights"][layer] @ x + params["biases"][layer]
+        x = jnp.tanh(x)
+    return params["weights"][-1] @ x + params["biases"][-1]
+
+params = read_params('./data/policy_grad/params/epoch_08000_params.npz')
+
+state = np.array([-1.54, 0.0, np.pi, 0.0])
 trajectory = [state]
-for i in range(2000):
-    f = 2*np.sin(i/10)
-    state = cartpole_dynamics(state, f=f)
+
+for i in range(500):
+    f = compute_mean_force(state, params).item()
+    state = trajectory_step(state, f)
     trajectory.append(state)
 
-# Animate it
 animate_cartpole(trajectory)
