@@ -75,9 +75,9 @@ def animate_cartpole(trajectory, l=0.5, interval=20):
     plt.grid(True)
     plt.tight_layout()
     
-    print("Saving animation to 'cartpole_animation.mp4'...")
-    ani.save('cartpole_animation.mp4', 
-             writer='ffmpeg', 
+    print("Saving animation to 'cartpole_animation.gif'...")
+    ani.save('cartpole_animation.gif', 
+             writer='pillow',
              fps=30,
              dpi=100,
              progress_callback=lambda i, n: print(f"\rProgress: {i}/{n} frames ({i/n*100:.1f}%)", end=""))
