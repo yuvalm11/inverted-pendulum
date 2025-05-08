@@ -2,7 +2,11 @@
 
 I used the cartpole problem as a convenient example to learn about Reinforcement Learning algorithms, specifically Vanilla Policy Gradient. In this document I will share the steps I took, starting with modeling the dynamics of the system, then implementing the algorithm, and finally some analysis of the results.
 
-![Cartpole Animation](cartpole_animation.mp4)
+<video width="100%" controls>
+  <source src="cartpole_animation.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 
 The video above shows the agent in action, successfully balancing the pole!
 
