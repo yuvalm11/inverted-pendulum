@@ -292,7 +292,7 @@ Where $\theta$ is the parameters of our model, $R_t$ is the cumulative reward or
 
 Our reward function is a weighted average of the squared distance from $\theta = 0$ and $x=0$, where the $x$ distance is weighted significantly lower than the $\theta$ distance. That way the agent learns to first balance the pole and then center the cart. 
 
-In [Erik Starnd's](https://fab.cba.mit.edu/classes/864.23/people/Erik/policy-gradients/), He's going through the theory of the algorithm in more detail. I recommend reading through it as well as his implementation of the algorithm.
+In [Erik Starnd's post](https://fab.cba.mit.edu/classes/864.23/people/Erik/policy-gradients/), He's going through the theory of the algorithm in more detail. I recommend reading through it as well as his implementation of the algorithm.
 
 
 ### Results:
