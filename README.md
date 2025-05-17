@@ -299,7 +299,7 @@ In [Erik Starnd's post](https://fab.cba.mit.edu/classes/864.23/people/Erik/polic
 
 After ~10000 epochs the agent successfully learned how to balance the pendulum and center it as can be seen in the following graphs:
 
-![](/trajectories.png)
+![](trajectories.png)
 
 Each line in the above plot shows a trajectory of 10 seconds after a random initialization of the system.
 We can see how the $\theta$ values quickly gets centered around 0 as the pole is balanced. By looking at the $x$ values we see how the cart is being centered right after balancing the pole.
@@ -307,5 +307,5 @@ We can see how the $\theta$ values quickly gets centered around 0 as the pole is
 
 The following graph shows the rewards, the final $\theta$ values, and the log standard deviation of the forces as the model trains. 
 
-![](/stats.png)
+![](stats.png)
 
