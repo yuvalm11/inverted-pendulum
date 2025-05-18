@@ -1,4 +1,4 @@
-# Solving the cartpole problem with Reinforcement Learning
+## Solving the cartpole problem with Reinforcement Learning
 
 I used the cartpole problem as a convenient example to learn about Reinforcement Learning algorithms, specifically Vanilla Policy Gradient. In this document I will share the steps I took, starting with modeling the dynamics of the system, then implementing the algorithm, and finally some analysis of the results.
 
